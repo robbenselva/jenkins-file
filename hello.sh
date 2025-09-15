@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "Hello, Jenkins is working fine!"
+echo "Hello from Jenkins Pipeline!" > output.txt
