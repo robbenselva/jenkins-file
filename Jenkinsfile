@@ -1,44 +1,27 @@
-pipeline {
-    agent any
-
-    environment {
-        RECIPIENT = 'robbenselva@gmail.com'
+node {
+    stage('Checkout') {
+        checkout scm
     }
 
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Make Script Executable') {
-            steps {
-                sh 'chmod +x hello.sh'
-            }
-        }
-
-        stage('Run Script') {
-            steps {
-                sh './hello.sh'
-            }
-        }
+    stage('Build') {
+        // Run script without needing chmod +x
+        sh 'bash hello.sh'
     }
 
-    post {
-        success {
-            emailext(
-                subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-                body: "Good news!\n\nJob ${env.JOB_NAME} #${env.BUILD_NUMBER} succeeded.\n\nCheck it here: ${env.BUILD_URL}",
-                to: "${RECIPIENT}"
-            )
-        }
-        failure {
-            emailext(
-                subject: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-                body: "Oops!\n\nJob ${env.JOB_NAME} #${env.BUILD_NUMBER} failed.\n\nCheck logs here: ${env.BUILD_URL}",
-                to: "${RECIPIENT}"
-            )
-        }
+    stage('Archive Output') {
+        archiveArtifacts artifacts: 'output.txt', fingerprint: true
+    }
+
+    stage('Email Notification') {
+        emailext (
+            subject: "Jenkins Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
+            body: """<p>Hello,</p>
+                     <p>The Jenkins job <b>${env.JOB_NAME}</b> build #${env.BUILD_NUMBER} has finished with status: <b>${currentBuild.currentResult}</b>.</p>
+                     <p>Output file is available here: 
+                        <a href="${env.BUILD_URL}artifact/output.txt">Download</a>
+                     </p>
+                     <p>Regards,<br/>Jenkins</p>""",
+            to: "robbenselva@gmail.com"
+        )
     }
 }
