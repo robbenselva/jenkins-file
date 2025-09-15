@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Hello from Jenkin Pipeline!" > output.txt
+echo "Hello from Jenkin Pipeline!"
 
 
 
