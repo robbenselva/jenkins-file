@@ -1,4 +1,5 @@
 #!/bin/bash
-echo "Hello from Jenkins Pipeline!" > output.txt
+echo "Hello from Jenkin Pipeline!" > output.txt
+
 
 
