@@ -1,5 +1,6 @@
 #!/bin/bash
-echo "Hello from Jenkin Pipeline!"
+echo "Hello from Jenkkin Pipeline!"
+
 
 
 
